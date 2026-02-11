@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical_dragon</title>
+    <!-- Importing Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <!-- Importing FontAwesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --color-bg: #050505;
+            --color-primary: #FF0033;
+            --color-white: #FFFFFF;
+            --color-glass: rgba(255, 255, 255, 0.05);
+            --color-glass-border: rgba(255, 255, 255, 0.15);
+            --font-main: 'Montserrat', sans-serif;
+            --font-tech: 'Orbitron', sans-serif;
+        }
+
+        /* --- RESET & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-white);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- BACKGROUND CANVAS --- */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none; 
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            width: 90%;
+            max-width: 450px;
+            padding: 20px 20px 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Desktop Card Effect */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 600px;
+                background: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border: 1px solid rgba(255, 0, 51, 0.1);
+                border-radius: 20px;
+                box-shadow: 0 0 50px rgba(255, 0, 51, 0.05);
+                padding: 50px;
+            }
+        }
+
+        /* --- TITLE --- */
+        .site-title {
+            font-family: var(--font-tech);
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-white);
+            text-shadow: 0 0 10px var(--color-primary);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* --- LOGO SECTION --- */
+        .logo-wrapper {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--color-primary);
+            border-right-color: var(--color-white);
+            animation: spin 3s linear infinite;
+        }
+
+        .logo-ring::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-bottom-color: var(--color-primary);
+            opacity: 0.5;
+            animation: spin-reverse 4s linear infinite;
+        }
+
+        .main-logo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-bg);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- SOCIAL ICONS --- */
+        .social-icons {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 35px;
+            z-index: 5;
+        }
+
+        .social-link {
+            color: var(--color-white);
+            font-size: 1.8rem;
+            text-decoration: none;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-link:hover {
+            color: var(--color-primary);
+            transform: scale(1.2) rotate(5deg);
+            text-shadow: 0 0 15px var(--color-primary);
+        }
+
+        /* Click Effect for Social Icons */
+        .social-link:active {
+            transform: scale(0.9);
+            color: #ddd;
+        }
+
+        /* --- BUTTON GROUP --- */
+        .btn-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* --- GLASS BUTTON STYLES --- */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--color-white);
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            
+            /* Glassmorphism Logic */
+            background: rgba(255, 255, 255, 0.05); /* Low opacity white */
+            backdrop-filter: blur(10px);        /* The Blur Effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border: 1px solid var(--color-glass-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+
+            /* Smooth Transition for Hover */
+            transition: all 0.3s ease;
+        }
+
+        /* Hover State */
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.12); /* Slightly brighter */
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        /* CLICK (ACTIVE) STATE - The "Press" Effect */
+        .btn:active {
+            transform: scale(0.96) translateY(0); /* Shrink and reset Y */
+            background: rgba(255, 255, 255, 0.2); /* Flash bright */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
+            border-color: rgba(255, 255, 255, 0.1);
+            transition: all 0.05s ease; /* Super fast response */
+        }
+
+        /* --- GIVEAWAY SPECIAL BUTTON --- */
+        .btn-giveaway {
+            /* Semi-transparent red gradient to allow blur to work */
+            background: linear-gradient(135deg, rgba(42, 0, 0, 0.85) 0%, rgba(80, 0, 0, 0.85) 100%);
+            border: 1px solid rgba(255, 0, 51, 0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 51, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            animation: pulse-border 2s infinite;
+        }
+
+        .btn-giveaway:hover {
+            background: linear-gradient(135deg, rgba(255, 0, 51, 0.9) 0%, rgba(150, 0, 0, 0.9) 100%);
+            color: var(--color-white);
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-giveaway:active {
+            transform: scale(0.96) translateY(0);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-reverse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 51, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 51, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 51, 0); }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 380px) {
+            .site-title { font-size: 1.5rem; }
+            .logo-wrapper { width: 120px; height: 120px; }
+            .main-logo { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="container">
+        
+        <!-- 1. Title -->
+        <h1 class="site-title">Technical_dragon</h1>
+
+        <!-- 2. Logo with Rotating Background -->
+        <div class="logo-wrapper">
+            <div class="logo-ring"></div>
+            <img src="https://ik.imagekit.io/Rajmalik99/retouch_2026021021093533.jpg" alt="Technical Dragon Logo" class="main-logo">
+        </div>
+
+        <!-- Social Icons (Now with scaling click effect) -->
+        <div class="social-icons">
+            <a href="https://youtube.com/@technical_dragon?si=seE_4HrKIRSFqPiF" target="_blank" class="social-link">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://www.instagram.com/technical_dragon?igsh=MW53dTN1bHBkMzE5OQ==" target="_blank" class="social-link">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+
+        <!-- 3. Navigation Buttons (Glass + Click Effects) -->
+        <div class="btn-group">
+            <a href="free.html" class="btn">Free Things</a>
+            
+            <a href="giveaway.html" class="btn btn-giveaway">
+                ★ GIVEAWAY ★
+            </a>
+            
+            <a href="mod.html" class="btn">Safe Apk Mods</a>
+            
+            <a href="compare.html" class="btn">Compare Devices</a>
+            
+            <a href="nevigation.html" class="btn">More +</a>
+        </div>
+
+    </div>
+
+    <!-- JavaScript for Ambient Particle Web (Interaction Removed) -->
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        // Settings for "Web" look - Slow and Steady
+        const particleCount = 70;
+        const connectionDistance = 120;
+        const speed = 0.3; 
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Particle Class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * speed;
+                this.vy = (Math.random() - 0.5) * speed;
+                this.size = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '#FF0033' : '#FFFFFF';
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                
+                // Draw lines to nearby particles
+                for (let j = index; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dx = p.x - p2.x;
+                    let dy = p.y - p2.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 - distance/connectionDistance/5})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
