@@ -3,387 +3,565 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical_dragon</title>
-    <!-- Importing Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
-    <!-- Importing FontAwesome for Social Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Dragon Gamer</title>
     <style>
-        /* --- CORE VARIABLES --- */
-        :root {
-            --color-bg: #050505;
-            --color-primary: #FF0033;
-            --color-white: #FFFFFF;
-            --color-glass: rgba(255, 255, 255, 0.05);
-            --color-glass-border: rgba(255, 255, 255, 0.15);
-            --font-main: 'Montserrat', sans-serif;
-            --font-tech: 'Orbitron', sans-serif;
-        }
-
-        /* --- RESET & BASE STYLES --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
-        }
-
+        /* Base Styles */
         body {
-            background-color: var(--color-bg);
-            color: var(--color-white);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            position: relative;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none; /* Standard syntax */
         }
 
-        /* --- BACKGROUND CANVAS --- */
-        #particle-canvas {
+        h1 {
+            font-size: 2.5em;
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Mobile Styles */
+        .mobile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px; /* Constrain width for mobile */
+        }
+
+        .logo-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .logo-background-spinner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, #800000 30%, #000 60%, #FF0000 100%);
+            animation: rotateBackground 5s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotateBackground {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .main-logo {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Smaller gap */
+            width: 90%;
+            max-width: 280px; /* Smaller max-width for buttons */
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 10px; /* Smaller padding */
+            background-color: #1a1a1a;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px; /* Slightly less rounded */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            font-weight: bold;
+            font-size: 1.1em; /* Smaller font size */
+            text-align: center;
+            border: 1px solid #444; /* Thinner subtle border */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glow animation without touch */
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            inset: -5px; /* Make it slightly larger than the button */
+            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, transparent 20%, transparent 80%, #FF0000 100%);
+            animation: buttonGlow 4s linear infinite;
+            filter: blur(8px); /* Soften the glow */
+            opacity: 0.6; /* Subtle glow */
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-button:hover::before {
+            opacity: 1; /* More intense glow on hover */
+        }
+
+        @keyframes buttonGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Haptic feel on click */
+        .nav-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #333;
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-button .caption {
+            font-size: 0.75em; /* Smaller caption */
+            color: #bbb;
+            margin-top: 5px;
+            font-weight: normal;
+            line-height: 1.2;
+        }
+
+        .nav-button.prime {
+            background: linear-gradient(45deg, #800000, #FF0000);
+            border-color: #FFD700;
+            box-shadow: 0 6px 15px rgba(255, 0, 0, 0.6);
+        }
+
+        .nav-button.prime:hover {
+            background: linear-gradient(45deg, #FF0000, #A00000);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .nav-button.prime::before {
+            background: conic-gradient(from 0deg at 50% 50%, #FFD700 0%, transparent 20%, transparent 80%, #FFD700 100%);
+            animation: buttonGlowPrime 4s linear infinite;
+        }
+
+        @keyframes buttonGlowPrime {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .nav-button.rules .caption {
+            color: #FF0000;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Desktop Styles */
+        .desktop-container {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, #220000 0%, #000 60%);
+            box-sizing: border-box;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 50px;
+        }
+
+        .desktop-sidebar {
+            background-color: #111;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            border: 1px solid #333;
+        }
+
+        .desktop-main-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+            padding: 40px;
+            background-color: rgba(10, 10, 10, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border: 1px solid #333;
+        }
+
+        .desktop-title {
+            font-size: 4.5em;
+            font-weight: bold;
+            color: #FF0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 30px rgba(255, 0, 0, 0.5);
+            margin-bottom: 30px;
+            letter-spacing: 3px;
+            text-align: center;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .desktop-logo-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #800000;
+        }
+
+        .desktop-logo-background-spinner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, #800000 30%, #000 60%, #FF0000 100%);
+            animation: rotateBackground 7s linear infinite reverse;
+            z-index: 0;
+        }
+
+        .desktop-main-logo {
+            position: relative;
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            object-fit: cover;
+            z-index: 1;
+            border: 3px solid #FF0000;
+        }
+
+        .desktop-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px; /* Smaller gap */
+            width: 100%;
+            max-width: 700px; /* Smaller max-width for buttons */
+            margin-top: 30px;
+        }
+
+        .desktop-nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 15px; /* Smaller padding */
+            background-color: #222;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px; /* Less rounded */
+            transition: background-color 0.4s ease, transform 0.3s ease, box-shadow 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+            font-size: 1.25em; /* Smaller font */
+            text-align: center;
+            border: 2px solid #555; /* Thinner border */
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .desktop-nav-button::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, transparent 20%, transparent 80%, #FF0000 100%);
+            animation: buttonGlow 4s linear infinite;
+            filter: blur(8px);
+            opacity: 0.6;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .desktop-nav-button:hover::before {
+            opacity: 1;
+        }
+
+        .desktop-nav-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .desktop-nav-button:hover {
+            background-color: #444;
+            transform: translateY(-5px) scale(1.02) rotateX(3deg);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .desktop-nav-button .caption {
+            font-size: 0.85em;
+            color: #ccc;
+            margin-top: 7px;
+            font-weight: normal;
+            line-height: 1.3;
+        }
+
+        .desktop-nav-button.prime {
+            background: linear-gradient(45deg, #800000, #FF0000);
+            border-color: #FFD700;
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        .desktop-nav-button.prime:hover {
+            background: linear-gradient(45deg, #FF0000, #A00000);
+            transform: translateY(-7px) scale(1.03) rotateX(5deg);
+        }
+        .desktop-nav-button.prime::before {
+            background: conic-gradient(from 0deg at 50% 50%, #FFD700 0%, transparent 20%, transparent 80%, #FFD700 100%);
+            animation: buttonGlowPrime 4s linear infinite;
+        }
+
+        .desktop-nav-button.rules .caption {
+            color: #FFD700;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+        }
+
+        /* Preloader */
+        .preloader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            pointer-events: none; 
-        }
-
-        /* --- CONTAINER --- */
-        .container {
-            width: 90%;
-            max-width: 450px;
-            padding: 20px 20px 40px 20px;
+            background-color: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 10;
-        }
-
-        /* Desktop Card Effect */
-        @media (min-width: 1024px) {
-            .container {
-                max-width: 600px;
-                background: rgba(0, 0, 0, 0.4);
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
-                border: 1px solid rgba(255, 0, 51, 0.1);
-                border-radius: 20px;
-                box-shadow: 0 0 50px rgba(255, 0, 51, 0.05);
-                padding: 50px;
-            }
-        }
-
-        /* --- TITLE --- */
-        .site-title {
-            font-family: var(--font-tech);
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--color-white);
-            text-shadow: 0 0 10px var(--color-primary);
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        /* --- LOGO SECTION --- */
-        .logo-wrapper {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            display: flex;
             justify-content: center;
-            align-items: center;
-            margin-bottom: 25px;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.7s ease-out;
         }
 
-        .logo-ring {
+        .preloader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .preloader-logo-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            overflow: hidden;
+            animation: preloaderLogoFadeIn 1s ease-out forwards;
+        }
+        
+        @keyframes preloaderLogoFadeIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .preloader-logo-background-spinner {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: var(--color-primary);
-            border-right-color: var(--color-white);
-            animation: spin 3s linear infinite;
+            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, #800000 30%, #000 60%, #FF0000 100%);
+            animation: rotateBackground 3s linear infinite; /* Faster spin */
+            z-index: 0;
         }
 
-        .logo-ring::before {
-            content: '';
-            position: absolute;
-            top: 5px; left: 5px; right: 5px; bottom: 5px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            border-bottom-color: var(--color-primary);
-            opacity: 0.5;
-            animation: spin-reverse 4s linear infinite;
-        }
-
-        .main-logo {
-            width: 130px;
-            height: 130px;
+        .preloader-main-logo {
+            position: relative;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--color-bg);
-            position: relative;
-            z-index: 2;
+            z-index: 1;
         }
 
-        /* --- SOCIAL ICONS --- */
-        .social-icons {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 35px;
-            z-index: 5;
-        }
-
-        .social-link {
-            color: var(--color-white);
-            font-size: 1.8rem;
-            text-decoration: none;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .social-link:hover {
-            color: var(--color-primary);
-            transform: scale(1.2) rotate(5deg);
-            text-shadow: 0 0 15px var(--color-primary);
-        }
-
-        /* Click Effect for Social Icons */
-        .social-link:active {
-            transform: scale(0.9);
-            color: #ddd;
-        }
-
-        /* --- BUTTON GROUP --- */
-        .btn-group {
-            width: 100%;
+        .skeleton-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            width: 80%;
+            max-width: 300px;
+            margin-top: 30px;
         }
 
-        /* --- GLASS BUTTON STYLES --- */
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--color-white);
-            font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            
-            /* Glassmorphism Logic */
-            background: rgba(255, 255, 255, 0.05); /* Low opacity white */
-            backdrop-filter: blur(10px);        /* The Blur Effect */
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border: 1px solid var(--color-glass-border);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-
-            /* Smooth Transition for Hover */
-            transition: all 0.3s ease;
+        .skeleton-line {
+            height: 20px;
+            background-color: #222;
+            border-radius: 4px;
+            animation: pulseSkeleton 1.5s infinite alternate;
         }
 
-        /* Hover State */
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.12); /* Slightly brighter */
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        .skeleton-line:nth-child(1) { width: 90%; animation-delay: 0s; }
+        .skeleton-line:nth-child(2) { width: 70%; animation-delay: 0.2s; }
+        .skeleton-line:nth-child(3) { width: 85%; animation-delay: 0.4s; }
+        .skeleton-line:nth-child(4) { width: 60%; animation-delay: 0.6s; }
+
+        @keyframes pulseSkeleton {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
         }
 
-        /* CLICK (ACTIVE) STATE - The "Press" Effect */
-        .btn:active {
-            transform: scale(0.96) translateY(0); /* Shrink and reset Y */
-            background: rgba(255, 255, 255, 0.2); /* Flash bright */
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
-            border-color: rgba(255, 255, 255, 0.1);
-            transition: all 0.05s ease; /* Super fast response */
+        /* Media Queries */
+        @media (max-width: 767px) {
+            .desktop-container {
+                display: none;
+            }
+            .mobile-container {
+                display: flex;
+            }
         }
-
-        /* --- GIVEAWAY SPECIAL BUTTON --- */
-        .btn-giveaway {
-            /* Semi-transparent red gradient to allow blur to work */
-            background: linear-gradient(135deg, rgba(42, 0, 0, 0.85) 0%, rgba(80, 0, 0, 0.85) 100%);
-            border: 1px solid rgba(255, 0, 51, 0.5);
-            box-shadow: 0 0 15px rgba(255, 0, 51, 0.2);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            animation: pulse-border 2s infinite;
-        }
-
-        .btn-giveaway:hover {
-            background: linear-gradient(135deg, rgba(255, 0, 51, 0.9) 0%, rgba(150, 0, 0, 0.9) 100%);
-            color: var(--color-white);
-            box-shadow: 0 0 30px rgba(255, 0, 51, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .btn-giveaway:active {
-            transform: scale(0.96) translateY(0);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes spin-reverse {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(-360deg); }
-        }
-
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 51, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 0, 51, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 51, 0); }
-        }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 380px) {
-            .site-title { font-size: 1.5rem; }
-            .logo-wrapper { width: 120px; height: 120px; }
-            .main-logo { width: 100px; height: 100px; }
+        @media (min-width: 768px) {
+            body {
+                padding: 0;
+            }
+            .mobile-container {
+                display: none;
+            }
+            .desktop-container {
+                display: grid;
+            }
         }
     </style>
 </head>
 <body>
-
-    <canvas id="particle-canvas"></canvas>
-
-    <div class="container">
-        
-        <!-- 1. Title -->
-        <h1 class="site-title">Technical_dragon</h1>
-
-        <!-- 2. Logo with Rotating Background -->
-        <div class="logo-wrapper">
-            <div class="logo-ring"></div>
-            <img src="https://ik.imagekit.io/Rajmalik99/retouch_2026021021093533.jpg" alt="Technical Dragon Logo" class="main-logo">
+    <div class="preloader">
+        <div class="preloader-logo-container">
+            <div class="preloader-logo-background-spinner"></div>
+            <img class="preloader-main-logo" src="https://ik.imagekit.io/Rajmalik99/IMG_20260213_140619_893.webp" alt="Preloader Logo">
         </div>
-
-        <!-- Social Icons (Now with scaling click effect) -->
-        <div class="social-icons">
-            <a href="https://youtube.com/@technical_dragon?si=seE_4HrKIRSFqPiF" target="_blank" class="social-link">
-                <i class="fab fa-youtube"></i>
-            </a>
-            <a href="https://www.instagram.com/technical_dragon?igsh=MW53dTN1bHBkMzE5OQ==" target="_blank" class="social-link">
-                <i class="fab fa-instagram"></i>
-            </a>
+        <div class="skeleton-container">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
         </div>
-
-        <!-- 3. Navigation Buttons (Glass + Click Effects) -->
-        <div class="btn-group">
-            <a href="free.html" class="btn">Free Things</a>
-            
-            <a href="giveaway.html" class="btn btn-giveaway">
-                ★ GIVEAWAY ★
-            </a>
-            
-            <a href="mod.html" class="btn">Safe Apk Mods</a>
-            
-            <a href="compare.html" class="btn">Compare Devices</a>
-            
-            <a href="nevigation.html" class="btn">More +</a>
-        </div>
-
     </div>
 
-    <!-- JavaScript for Ambient Particle Web (Interaction Removed) -->
+    <!-- Mobile Design -->
+    <div class="mobile-container">
+        <h1>Dragon Gamer</h1>
+        <div class="logo-container">
+            <div class="logo-background-spinner"></div>
+            <img class="main-logo" src="https://ik.imagekit.io/Rajmalik99/IMG_20260213_140619_893.webp" alt="Main Logo">
+        </div>
+        <div class="button-group">
+            <a href="free.html" class="nav-button">
+                Free Tournament
+                <span class="caption">₹10,000 Prize on each</span>
+            </a>
+            <a href="pack.html" class="nav-button">
+                Free packs
+                <span class="caption">some free stuffs</span>
+            </a>
+            <a href="special.html" class="nav-button prime">
+                Prime Tournament Offline
+                <span class="caption">Biggest offline Tournament</span>
+            </a>
+            <a href="rule.html" class="nav-button rules">
+                Rules
+                <span class="caption">IMPORTANT</span>
+            </a>
+            <a href="hero.html" class="nav-button">
+                Heros
+                <span class="caption">Lions</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Desktop Design -->
+    <div class="desktop-container">
+        <div class="desktop-sidebar">
+            <div class="desktop-logo-container">
+                <div class="desktop-logo-background-spinner"></div>
+                <img class="desktop-main-logo" src="https://ik.imagekit.io/Rajmalik99/IMG_20260213_140619_893.webp" alt="Desktop Main Logo">
+            </div>
+        </div>
+        <div class="desktop-main-content">
+            <h1 class="desktop-title">Dragon Gamer</h1>
+            <p style="font-size: 1.3em; color: #eee; margin-bottom: 50px; max-width: 800px; line-height: 1.6;">
+                Welcome to the ultimate gaming experience. Immerse yourself in thrilling tournaments, exclusive rewards, and a vibrant community.
+            </p>
+            <div class="desktop-nav-grid">
+                <a href="free.html" class="desktop-nav-button">
+                    Free Tournament
+                    <span class="caption">₹10,000 Prize on each</span>
+                </a>
+                <a href="pack.html" class="desktop-nav-button">
+                    Free packs
+                    <span class="caption">some free stuffs</span>
+                </a>
+                <a href="special.html" class="desktop-nav-button prime">
+                    Prime Tournament Offline
+                    <span class="caption">Biggest offline Tournament</span>
+                </a>
+                <a href="rule.html" class="desktop-nav-button rules">
+                    Rules
+                    <span class="caption">IMPORTANT</span>
+                </a>
+                <a href="hero.html" class="desktop-nav-button">
+                    Heros
+                    <span class="caption">Lions</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        let particles = [];
-        
-        // Settings for "Web" look - Slow and Steady
-        const particleCount = 70;
-        const connectionDistance = 120;
-        const speed = 0.3; 
-        
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        // Disable right-click
+        document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // Particle Class
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * speed;
-                this.vy = (Math.random() - 0.5) * speed;
-                this.size = Math.random() * 2 + 1;
-                this.color = Math.random() > 0.5 ? '#FF0033' : '#FFFFFF';
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            
-            particles.forEach((p, index) => {
-                p.update();
-                p.draw();
-                
-                // Draw lines to nearby particles
-                for (let j = index; j < particles.length; j++) {
-                    let p2 = particles[j];
-                    let dx = p.x - p2.x;
-                    let dy = p.y - p2.y;
-                    let distance = Math.sqrt(dx*dx + dy*dy);
-
-                    if (distance < connectionDistance) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 - distance/connectionDistance/5})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                }
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
+        // Preloader logic
+        window.addEventListener('load', () => {
+            const preloader = document.querySelector('.preloader');
+            // Give a short delay for logo animation to be visible
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+            }, 1500); // 1.5 seconds delay
+        });
     </script>
+
 </body>
 </html>
