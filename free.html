@@ -2,520 +2,425 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Assets | Technical Dragon</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Confetti Library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dragon Gamer - Free Pass</title>
     <style>
-        /* --- CORE VARIABLES --- */
+        /* --- CORE THEME --- */
         :root {
-            --color-bg: #050505;
-            --color-primary: #FF0033; /* Red */
-            --color-green: #00FF66;   /* Glowing Green */
-            --color-white: #FFFFFF;
-            --color-glass: rgba(255, 255, 255, 0.05);
-            --color-glass-border: rgba(255, 255, 255, 0.15);
-            --font-main: 'Montserrat', sans-serif;
-            --font-tech: 'Orbitron', sans-serif;
+            --red: #FF0000;
+            --dark-red: #330000;
+            --bg: #000000;
+            --card-bg: #0d0d0d;
+            --neon: #00FF00;
+            --gold: #FFD700;
+            --gray: #222;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--color-bg);
-            color: var(--color-white);
-            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
             overflow-x: hidden;
+            user-select: none;
         }
 
-        /* Copy Protection Class */
-        .protected {
-            user-select: none;
-            -webkit-user-select: none;
-            pointer-events: auto;
+        /* --- PRELOADER --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column;
         }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid #333;
+            border-top: 4px solid var(--red); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* --- HEADER --- */
-        .header-section {
-            padding: 30px 20px;
-            text-align: center;
-            position: relative;
-            z-index: 10;
+        .header { text-align: center; padding: 20px; margin-bottom: 10px; }
+        .header img {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 2px solid var(--red); box-shadow: 0 0 15px var(--dark-red);
+        }
+        h1 { margin: 10px 0 5px; font-size: 1.5rem; text-transform: uppercase; font-weight: 800; }
+        .subtitle { font-size: 0.8rem; color: #aaa; }
+        .link { color: var(--red); font-weight: bold; cursor: pointer; text-decoration: underline; }
+
+        /* --- ACCORDION SYSTEM --- */
+        .container { 
+            width: 95%; max-width: 450px; padding-bottom: 100px; 
+            display: flex; flex-direction: column; gap: 15px; 
         }
 
-        .page-title {
-            font-family: var(--font-tech);
-            font-size: 2rem;
-            color: var(--color-white);
-            text-shadow: 0 0 15px var(--color-primary);
-            margin-bottom: 15px;
-        }
-
-        .subtitle {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #ccc;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .highlight-link {
-            color: var(--color-primary);
-            font-weight: 700;
-            text-decoration: none;
-            border-bottom: 1px dashed var(--color-primary);
+        /* Group Button (The "Message Button" looking toggle) */
+        .group-btn {
+            background: linear-gradient(90deg, #1a0000, #400000);
+            border: 1px solid var(--red);
+            padding: 15px 20px;
+            width: 100%;
+            border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .group-btn:active { transform: scale(0.98); }
+        .group-btn.active {
+            background: linear-gradient(90deg, #400000, #800000);
+            box-shadow: 0 0 15px var(--red);
         }
 
-        /* --- LOADER BAR --- */
-        .loader-wrapper {
-            width: 100%;
-            height: 4px;
-            background: #222;
-            margin-top: 25px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
+        .group-title {
+            font-size: 1.1rem; font-weight: bold; color: #fff;
+            text-transform: uppercase; letter-spacing: 1px;
         }
-
-        .loader-bar {
-            width: 0%;
-            height: 100%;
-            background: var(--color-primary);
-            box-shadow: 0 0 10px var(--color-primary);
-            transition: width 4s linear;
+        .group-icon {
+            width: 24px; height: 24px; fill: var(--red);
+            transition: transform 0.3s;
         }
+        .group-btn.active .group-icon { transform: rotate(180deg); fill: #fff; }
 
-        /* --- ASSETS GRID --- */
-        .assets-container {
-            padding: 20px;
-            display: flex;
+        /* Content Area (Hidden by default) */
+        .group-content {
+            display: none;
             flex-direction: column;
-            gap: 25px;
-            align-items: center;
-            margin-bottom: 80px;
-            min-height: 50vh;
+            gap: 20px;
+            padding: 10px 0;
+            animation: slideDown 0.3s ease-out;
         }
+        .group-content.show { display: flex; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .asset-card {
-            width: 100%;
-            max-width: 400px;
-            background: var(--color-glass);
-            border: 1px solid var(--color-glass-border);
+
+        /* --- CARD DESIGN --- */
+        .card {
+            background: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            animation: fadeUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .asset-image-wrapper {
-            width: 100%;
-            height: 200px;
-            background: #111;
+            border: 1px solid #222;
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
         }
 
-        .asset-thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .asset-card:hover .asset-thumb {
-            transform: scale(1.05);
-        }
-
-        /* Adblock Msg */
-        .adblock-msg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #222;
-            color: #666;
-            font-size: 0.8rem;
-            text-align: center;
-            padding: 10px;
-            z-index: -1;
-        }
-
-        .asset-details { padding: 15px; text-align: center; }
-        .asset-name { font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; text-transform: uppercase; }
-        .asset-caption { font-size: 0.85rem; color: #aaa; margin-bottom: 15px; min-height: 2.4em; }
-
-        /* Urgency Text */
-        .urgency-text {
-            font-size: 0.75rem; color: var(--color-primary); font-weight: 700;
-            margin-bottom: 8px; display: block; letter-spacing: 0.5px;
-            animation: pulse-red 2s infinite;
-        }
-        @keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-
-        .price-btn {
-            width: 100%; padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-weight: 700; color: white; cursor: pointer;
-            border-radius: 8px; display: flex; justify-content: center;
-            align-items: center; gap: 10px; transition: 0.2s;
-        }
-        .price-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.2); }
-        .price-strike { text-decoration: line-through; color: #888; font-size: 0.9rem; }
-        .price-free {
-            color: var(--color-green); font-size: 1.2rem;
-            text-transform: uppercase; text-shadow: 0 0 5px rgba(0, 255, 102, 0.3);
-        }
-
-        /* Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
-            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px;
-        }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* --- MODAL --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
-            z-index: 100; display: none; justify-content: center; align-items: center;
-            padding: 20px; opacity: 0; transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active { display: flex; opacity: 1; }
-
-        .modal-content {
-            background: #0f0f0f; border: 1px solid var(--color-glass-border);
-            border-radius: 15px; width: 100%; max-width: 350px;
-            padding: 20px; text-align: center;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-
-        .video-preview-container {
-            position: relative; width: 100%; padding-bottom: 56.25%;
-            background: #000; border-radius: 8px; overflow: hidden;
-            margin-bottom: 15px; border: 1px solid #333; display: block;
-        }
-        .video-thumb { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .play-icon {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); font-size: 3rem; color: rgba(255, 255, 255, 0.8);
-        }
-
-        .modal-title { font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; }
-        .modal-divider { height: 1px; background: #333; width: 100%; margin: 15px 0; }
-        .modal-close { margin-top: 15px; color: #888; font-size: 0.8rem; cursor: pointer; text-decoration: underline; }
-
-        /* --- NEW: SCANNER & DOWNLOAD BUTTON --- */
-        .scanner-ui {
+        /* Image Area */
+        .thumb-box {
+            position: relative; width: 100%; height: 160px;
             background: #111;
+        }
+        .thumb { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Badges */
+        .badge-num {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.9); border: 1px solid var(--gold);
+            color: var(--gold); padding: 4px 8px; border-radius: 4px;
+            font-weight: bold; font-size: 0.9rem;
+            box-shadow: 0 0 10px var(--gold);
+            z-index: 2;
+        }
+        
+        .badge-type {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(255, 0, 0, 0.9);
+            color: #fff; padding: 4px 8px; border-radius: 4px;
+            font-weight: bold; font-size: 0.8rem;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+
+        /* Status: Done */
+        .card.done .thumb { filter: grayscale(100%) brightness(0.4); }
+        .card.done .status-overlay { display: block; }
+        .status-overlay {
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-10deg);
+            border: 3px solid var(--red); color: var(--red);
+            font-size: 1.8rem; font-weight: 900; padding: 5px 15px;
+            z-index: 5; text-transform: uppercase;
+        }
+
+        /* DATA SECTION (ID/PASS) */
+        .data-area {
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #333;
-            display: none; /* Hidden by default */
+            display: flex; flex-direction: column; gap: 10px;
         }
 
-        .scan-bar-container {
-            width: 100%;
-            height: 6px;
-            background: #222;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 10px;
+        .data-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #151515; padding: 10px; border-radius: 6px;
+            border-left: 4px solid #333; /* Default gray */
+            transition: all 0.3s;
         }
 
-        .scan-bar-fill {
-            width: 0%;
-            height: 100%;
-            background: var(--color-green);
-            box-shadow: 0 0 10px var(--color-green);
-            transition: width 0.3s ease;
+        .data-label { color: #888; font-size: 0.9rem; font-weight: bold; }
+        .data-val { font-family: monospace; font-size: 1.1rem; color: #fff; font-weight: bold; letter-spacing: 1px; }
+        
+        /* STATE: WAITING (Red) */
+        .data-row.waiting {
+            background: rgba(255, 0, 0, 0.1);
+            border-left-color: var(--red);
+            border: 1px solid rgba(255,0,0,0.3);
+            border-left-width: 4px;
         }
+        .data-row.waiting .data-val { color: var(--red); font-size: 0.9rem; letter-spacing: 0; }
+        
+        /* STATE: LIVE (Green) */
+        .data-row.live {
+            background: rgba(0, 255, 0, 0.05);
+            border-left-color: var(--neon);
+            border: 1px solid rgba(0,255,0,0.3);
+            border-left-width: 4px;
+            box-shadow: 0 0 10px rgba(0,255,0,0.1);
+        }
+        .data-row.live .data-val { color: var(--neon); text-shadow: 0 0 5px rgba(0,255,0,0.5); }
 
-        .status-text {
-            font-family: var(--font-tech);
-            font-size: 0.8rem;
-            color: #aaa;
-            letter-spacing: 1px;
+        .copy-btn {
+            background: #333; color: #fff; border: none;
+            padding: 6px 12px; border-radius: 4px; cursor: pointer;
+            font-size: 0.8rem; font-weight: bold;
         }
+        .copy-btn:active { transform: scale(0.95); }
 
-        .btn-download {
-            display: none; /* Hidden until unlocked */
-            width: 100%; padding: 15px;
-            background: var(--color-green); color: #000;
-            font-weight: 800; text-transform: uppercase;
-            letter-spacing: 1px; text-decoration: none;
-            border-radius: 8px; box-shadow: 0 0 15px var(--color-green);
-            animation: pulse-green 2s infinite;
+        /* REFRESH BUTTON */
+        .refresh-btn {
+            background: transparent;
+            color: var(--neon);
+            border: 1px solid var(--neon);
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 5px;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            transition: background 0.3s;
         }
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 10px rgba(0, 255, 102, 0.5); }
-            50% { box-shadow: 0 0 25px rgba(0, 255, 102, 0.8); }
-        }
+        .refresh-btn:active { background: rgba(0,255,0,0.1); transform: scale(0.98); }
+        .refresh-icon { width: 16px; height: 16px; fill: var(--neon); transition: transform 0.5s; }
+        .refresh-btn:active .refresh-icon { transform: rotate(180deg); }
 
-        /* --- FAB --- */
-        .fab-container { position: fixed; bottom: 30px; right: 30px; z-index: 90; }
-        .fab-main {
-            width: 60px; height: 60px; background: var(--color-white);
-            border-radius: 50%; color: var(--color-bg);
-            display: flex; justify-content: center; align-items: center;
-            font-size: 1.5rem; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-            cursor: pointer; transition: transform 0.3s ease;
+        /* FAB */
+        .fab-wrap { position: fixed; bottom: 30px; right: 30px; z-index: 99; }
+        .fab {
+            width: 55px; height: 55px; background: #222; border-radius: 50%;
+            border: 2px solid #444; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6); transition: 0.3s;
         }
-        .fab-options {
+        .fab.active { background: var(--red); border-color: var(--red); transform: rotate(45deg); }
+        .fab-menu {
             position: absolute; bottom: 70px; right: 5px;
-            display: flex; flex-direction: column; gap: 15px; pointer-events: none;
+            display: none; flex-direction: column; gap: 10px;
         }
-        .fab-icon {
-            width: 50px; height: 50px; border-radius: 50%;
-            color: white; display: flex; justify-content: center; align-items: center;
-            font-size: 1.2rem; text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); opacity: 0;
-            transform: translateY(20px) scale(0.5);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .fab-wrap.active .fab-menu { display: flex; }
+        .fab-item {
+            width: 45px; height: 45px; background: #222; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        .fab-container.active .fab-options { pointer-events: auto; }
-        .fab-container.active .fab-icon { opacity: 1; transform: translateY(0) scale(1); }
-        .fab-container.active .fab-icon:nth-child(3) { transition-delay: 0.05s; }
-        .fab-container.active .fab-icon:nth-child(2) { transition-delay: 0.1s; }
-        .fab-container.active .fab-icon:nth-child(1) { transition-delay: 0.15s; }
-        .fab-container.active .fab-main { transform: rotate(45deg); background: var(--color-primary); color: white; }
-        .icon-tg { background: #0088cc; }
-        .icon-yt { background: #FF0000; }
-        .icon-ig { background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); }
+        svg { width: 24px; height: 24px; fill: white; }
 
     </style>
 </head>
 <body>
 
-    <div class="header-section">
-        <h1 class="page-title">Free Assets</h1>
-        <p class="subtitle">
-            We are giving you free assets so give some support by following us on 
-            <a id="link-insta" class="highlight-link" target="_blank">Instagram</a> 
-            and subscribe on 
-            <a id="link-yt" class="highlight-link" target="_blank">Youtube</a>
-        </p>
+    <div id="loader">
+        <div class="spinner"></div>
+        <div style="font-family:monospace; color:var(--red);">LOADING DATA...</div>
     </div>
 
-    <div class="loader-wrapper">
-        <div class="loader-bar" id="loader"></div>
+    <div class="header">
+        <img src="https://ik.imagekit.io/Rajmalik99/IMG_20260213_140619_893.webp" alt="Logo">
+        <h1>Free Tournament Pass</h1>
+        <div class="subtitle">
+            Instant Updates. No Delays.<br>
+            Follow: <span class="link" onclick="go('instagram')">Instagram</span> | 
+            <span class="link" onclick="go('youtube')">Youtube</span><br>
+            <a href="rule.html" class="link" style="color:var(--red)">READ RULES</a>
+        </div>
+        <hr style="border:0; border-top:1px solid #333; margin-top:15px;">
     </div>
 
-    <div class="assets-container" id="assets-grid">
-        <!-- Skeleton Loaders -->
-        <div class="asset-card" style="opacity:1; transform:none;">
-            <div class="skeleton" style="width:100%; height:200px;"></div>
-            <div class="asset-details">
-                <div class="skeleton" style="width:60%; height:20px; margin:10px auto;"></div>
-                <div class="skeleton" style="width:80%; height:15px; margin:10px auto;"></div>
-                <div class="skeleton" style="width:100%; height:40px; border-radius:8px;"></div>
-            </div>
-        </div>
+    <!-- MAIN CONTAINER FOR ACCORDIONS -->
+    <div class="container" id="main-list">
+        <!-- JS Injects Groups and Cards -->
     </div>
 
-    <!-- MODAL -->
-    <div class="modal-overlay" id="download-modal">
-        <div class="modal-content">
-            <a id="modal-video-link" href="#" target="_blank" class="video-preview-container">
-                <img id="modal-video-thumb" class="video-thumb" src="" alt="Video Preview">
-                <i class="fas fa-play-circle play-icon"></i>
-            </a>
-
-            <h3 class="modal-title">Our New Video is Out 🤯</h3>
-            <div class="modal-divider"></div>
-            
-            <!-- SCANNER UI (Initially Visible) -->
-            <div class="scanner-ui" id="scanner">
-                <div class="scan-bar-container">
-                    <div class="scan-bar-fill" id="scan-bar"></div>
-                </div>
-                <div class="status-text" id="status-text">INITIALIZING...</div>
-            </div>
-
-            <!-- DOWNLOAD BTN (Initially Hidden) -->
-            <a id="modal-download-btn" href="#" target="_blank" class="btn-download">
-                GET FREE ASSET
-            </a>
-
-            <div class="modal-close" onclick="closeModal()">Close</div>
+    <div class="fab-wrap" id="fab-wrap">
+        <div class="fab-menu">
+            <div class="fab-item" onclick="go('youtube')"><svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg></div>
+            <div class="fab-item" onclick="go('instagram')"><svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg></div>
         </div>
-    </div>
-
-    <!-- FAB -->
-    <div class="fab-container" id="fab">
-        <div class="fab-options">
-            <a id="fab-ig" href="#" target="_blank" class="fab-icon icon-ig"><i class="fab fa-instagram"></i></a>
-            <a id="fab-yt" href="#" target="_blank" class="fab-icon icon-yt"><i class="fab fa-youtube"></i></a>
-            <a id="fab-tg" href="#" target="_blank" class="fab-icon icon-tg"><i class="fab fa-telegram"></i></a>
-        </div>
-        <div class="fab-main" onclick="toggleFab(event)">
-            <i class="fas fa-comment-dots"></i>
-        </div>
+        <div class="fab" onclick="toggleFab()"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyXtvJkxlZizHHvwQI3SkBIKd8Hwo-MGhq2q8yn3wyhjEDOxhC4-4ABcGyEGqY0GDzL/exec'; 
+        const API = "https://script.google.com/macros/s/AKfycbyTTS3Vyo_X3Fhb6DutYmEIWs1hUhIk_jd_zAUOxomW-UmDD1uCBfJVUSqB4ES5D12DcA/exec";
+        let links = {};
 
-        window.addEventListener('load', () => {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FF0033', '#FFFFFF', '#00FF66'] });
-            document.body.style.overflow = 'hidden';
-            const loader = document.getElementById('loader');
-            setTimeout(() => { loader.style.width = '100%'; }, 50);
-            setTimeout(() => { document.body.style.overflow = 'auto'; }, 4000);
+        window.onload = () => {
             fetchData();
-        });
+        };
 
-        let globalLinks = { video: '#' }; 
-        let scanTimer = null; // To clear interval if closed
+        function haptic() { if(navigator.vibrate) navigator.vibrate(50); }
 
         async function fetchData() {
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                if (data.status === "success") {
-                    updateLinks(data.links);
-                    renderAssets(data.assets);
-                    globalLinks = data.links;
-                }
-            } catch (error) {
-                console.error("Fetch Error:", error);
-                document.getElementById('assets-grid').innerHTML = '<h3 style="color:#666;">Error loading assets. Please refresh.</h3>';
-            }
+                fetch(`${API}?action=getLinks`).then(r=>r.json()).then(d=>links=d);
+                const res = await fetch(`${API}?action=getTournaments`);
+                const data = await res.json();
+                renderGroupedCards(data);
+                document.getElementById('loader').style.display = 'none';
+            } catch(e) { console.log(e); }
         }
 
-        function updateLinks(links) {
-            document.getElementById('link-insta').href = links.instagram;
-            document.getElementById('link-yt').href = links.youtube;
-            document.getElementById('fab-ig').href = links.instagram;
-            document.getElementById('fab-yt').href = links.youtube;
-            document.getElementById('fab-tg').href = links.telegram;
-        }
+        // NEW: Grouping Logic
+        function renderGroupedCards(data) {
+            const container = document.getElementById('main-list');
+            container.innerHTML = "";
 
-        function renderAssets(assets) {
-            const grid = document.getElementById('assets-grid');
-            grid.innerHTML = ''; 
+            // 1. Sort Data by Number (Descending: Newest First)
+            // If you want 1-10 at top, change b.number - a.number to a.number - b.number
+            data.sort((a, b) => b.number - a.number);
 
-            assets.forEach((asset, index) => {
-                const slotsLeft = Math.floor(Math.random() * (16 - 3 + 1)) + 3; 
-                const card = document.createElement('div');
-                card.className = 'asset-card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                card.innerHTML = `
-                    <div class="asset-image-wrapper">
-                        <div class="adblock-msg">Image Failed.<br>Disable AdBlock.</div>
-                        <img src="${asset.thumbnail}" class="asset-thumb protected" alt="${asset.name}" draggable="false" oncontextmenu="return false;" onerror="this.style.opacity='0'">
+            // 2. Bucket Data into Groups of 10
+            const groups = {};
+            data.forEach(t => {
+                // Determine group index (e.g., Num 5 -> Group 1, Num 15 -> Group 2)
+                const groupIndex = Math.ceil(t.number / 10);
+                if (!groups[groupIndex]) groups[groupIndex] = [];
+                groups[groupIndex].push(t);
+            });
+
+            // 3. Get Group Keys and Sort Descending (Group 3, then Group 2, then Group 1)
+            const groupKeys = Object.keys(groups).sort((a, b) => b - a);
+
+            // 4. Render Accordions
+            groupKeys.forEach((key, index) => {
+                const groupData = groups[key];
+                
+                // Determine Label: e.g., "11 - 20"
+                const start = (key - 1) * 10 + 1;
+                const end = key * 10;
+                
+                // Create Accordion HTML
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = `
+                    <div class="group-btn ${index === 0 ? 'active' : ''}" onclick="toggleGroup(this)">
+                        <div class="group-title">TOURNAMENTS #${start} - #${end}</div>
+                        <svg class="group-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
                     </div>
-                    <div class="asset-details">
-                        <div class="asset-name">${asset.name}</div>
-                        <div class="asset-caption">${asset.caption}</div>
-                        <span class="urgency-text"><i class="fas fa-fire-alt"></i> Only ${slotsLeft} downloads left today</span>
-                        <div class="price-btn" onclick="openModal('${asset.link}')">
-                            <span class="price-strike">${asset.price}</span>
-                            <span class="price-free">FREE</span>
-                        </div>
+                    <div class="group-content ${index === 0 ? 'show' : ''}">
+                        <!-- Cards go here -->
                     </div>
                 `;
-                grid.appendChild(card);
+
+                const contentDiv = wrapper.querySelector('.group-content');
+                
+                // Inject Cards into this group
+                groupData.forEach(t => {
+                    contentDiv.appendChild(createCard(t));
+                });
+
+                container.appendChild(wrapper);
             });
         }
 
-        // --- CORE: SCANNER + TIMER LOGIC ---
-        function openModal(assetLink) {
-            if (navigator.vibrate) navigator.vibrate(50); // Haptic
+        function toggleGroup(btn) {
+            haptic();
+            btn.classList.toggle('active');
+            const content = btn.nextElementSibling;
+            content.classList.toggle('show');
+        }
 
-            const modal = document.getElementById('download-modal');
-            const videoLink = globalLinks.video || '#';
-            const btn = document.getElementById('modal-download-btn');
-            const scanner = document.getElementById('scanner');
-            const scanBar = document.getElementById('scan-bar');
-            const statusText = document.getElementById('status-text');
+        // Existing Card Logic
+        function createCard(t) {
+            const isDone = t.status === "Done";
+            const div = document.createElement('div');
+            div.className = `card ${isDone ? 'done' : ''}`;
+            
+            const hasId = t.roomId && t.roomId.toString().trim() !== "";
+            const hasPass = t.roomPass && t.roomPass.toString().trim() !== "";
+            
+            div.innerHTML = `
+                <div class="thumb-box">
+                    <div class="badge-num">#${t.number}</div>
+                    <div class="badge-type">${t.type}</div>
+                    <img src="${t.thumbnail}" class="thumb">
+                    <div class="status-overlay">COMPLETED</div>
+                </div>
+                
+                ${!isDone ? `
+                <div class="data-area">
+                    <div class="data-row ${hasId ? 'live' : 'waiting'}" id="row-id-${t.rowIndex}">
+                        <span class="data-label">ID:</span>
+                        <span class="data-val" id="val-id-${t.rowIndex}">${hasId ? t.roomId : 'WAITING...'}</span>
+                        ${hasId ? `<button class="copy-btn" onclick="copy('${t.roomId}')">COPY</button>` : ''}
+                    </div>
+                    
+                    <div class="data-row ${hasPass ? 'live' : 'waiting'}" id="row-pass-${t.rowIndex}">
+                        <span class="data-label">PASS:</span>
+                        <span class="data-val" id="val-pass-${t.rowIndex}">${hasPass ? t.roomPass : 'WAITING...'}</span>
+                        ${hasPass ? `<button class="copy-btn" onclick="copy('${t.roomPass}')">COPY</button>` : ''}
+                    </div>
 
-            // 1. SETUP UI
-            document.getElementById('modal-video-link').href = videoLink;
-            btn.href = assetLink;
-            btn.style.display = 'none'; // Hide button
-            scanner.style.display = 'block'; // Show scanner
-            scanBar.style.width = '0%'; // Reset bar
-            statusText.innerText = 'INITIALIZING SCAN...';
-            statusText.style.color = '#aaa';
+                    <button class="refresh-btn" onclick="refreshCard(${t.rowIndex})">
+                        <svg class="refresh-icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                        Check for Update
+                    </button>
+                </div>
+                ` : ''}
+            `;
+            return div;
+        }
 
-            // 2. VIDEO THUMB
-            let videoId = 'dQw4w9WgXcQ'; 
+        async function refreshCard(rowIndex) {
+            haptic();
             try {
-                const match = videoLink.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/)|v\/)([^?&"'>]+)/);
-                if (match && match[1]) videoId = match[1];
-            } catch (e) {}
-            document.getElementById('modal-video-thumb').src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-            
-            modal.classList.add('active');
-
-            // 3. START ANIMATION SEQUENCE
-            let phase = 0;
-            if (scanTimer) clearInterval(scanTimer);
-            
-            // Phase 1: Virus Scan (3 Seconds)
-            setTimeout(() => { scanBar.style.width = '40%'; statusText.innerText = 'SCANNING FOR VIRUSES...'; }, 500);
-            setTimeout(() => { scanBar.style.width = '70%'; statusText.innerText = 'CHECKING REPOSITORY...'; }, 1500);
-            setTimeout(() => { 
-                scanBar.style.width = '100%'; 
-                statusText.innerText = '✓ SCAN COMPLETE. FILE SAFE.'; 
-                statusText.style.color = '#00FF66'; // Green Text
-            }, 3000);
-
-            // Phase 2: Countdown (5 Seconds)
-            let countdown = 5;
-            setTimeout(() => {
-                scanTimer = setInterval(() => {
-                    statusText.innerText = `UNLOCKING LINK IN ${countdown}...`;
-                    statusText.style.color = '#FF0033'; // Red Countdown
-                    countdown--;
-
-                    if (countdown < 0) {
-                        clearInterval(scanTimer);
-                        // Phase 3: Unlock
-                        scanner.style.display = 'none';
-                        btn.style.display = 'block'; // Show Button
-                        if (navigator.vibrate) navigator.vibrate(100); // Success Vibe
-                    }
-                }, 1000);
-            }, 3500); // Start countdown a bit after scan finishes
+                const res = await fetch(`${API}?action=getCardData&row=${rowIndex}`);
+                const d = await res.json();
+                updateRowUI(rowIndex, 'id', d.id);
+                updateRowUI(rowIndex, 'pass', d.pass);
+            } catch(e) { alert("Network Error"); }
         }
 
-        function closeModal() {
-            document.getElementById('download-modal').classList.remove('active');
-            if (scanTimer) clearInterval(scanTimer); // Stop timer if they close early
+        function updateRowUI(rowIndex, type, value) {
+            const row = document.getElementById(`row-${type}-${rowIndex}`);
+            const valSpan = document.getElementById(`val-${type}-${rowIndex}`);
+            const oldBtn = row.querySelector('.copy-btn');
+            if(oldBtn) oldBtn.remove();
+
+            if (value && value.toString().trim() !== "") {
+                row.className = `data-row live`;
+                valSpan.innerText = value;
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.innerText = 'COPY';
+                btn.onclick = () => copy(value);
+                row.appendChild(btn);
+            } else {
+                row.className = `data-row waiting`;
+                valSpan.innerText = "WAITING...";
+            }
         }
 
-        document.getElementById('download-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'download-modal') closeModal();
-        });
-
-        // FAB
-        function toggleFab(event) {
-            event.stopPropagation();
-            document.getElementById('fab').classList.toggle('active');
+        function copy(txt) {
+            haptic();
+            navigator.clipboard.writeText(txt);
+            alert("Copied: " + txt);
         }
-        document.addEventListener('click', (e) => {
-            const fab = document.getElementById('fab');
-            if (fab.classList.contains('active') && !fab.contains(e.target)) fab.classList.remove('active');
-        });
+
+        function go(key) { haptic(); if(links[key]) window.location.href = links[key]; }
+        function toggleFab() { haptic(); document.getElementById('fab-wrap').classList.toggle('active'); }
+        document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
