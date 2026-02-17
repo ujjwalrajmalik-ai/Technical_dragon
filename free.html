@@ -29,6 +29,33 @@
             user-select: none;
         }
 
+        /* --- TOAST NOTIFICATION (Replaces Alert) --- */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #1a1a1a;
+            color: var(--neon);
+            text-align: center;
+            border-radius: 50px;
+            padding: 12px 20px;
+            position: fixed;
+            z-index: 9999;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            border: 1px solid var(--neon);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
         /* --- PRELOADER --- */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -60,10 +87,7 @@
         }
 
         /* --- GROUP BUTTON (Only for 10/10 Groups) --- */
-        .group-wrapper {
-            width: 100%;
-            display: flex; flex-direction: column; gap: 10px;
-        }
+        .group-wrapper { width: 100%; display: flex; flex-direction: column; gap: 10px; }
 
         .group-btn {
             background: linear-gradient(90deg, #1a0000, #400000);
@@ -93,13 +117,9 @@
         }
         .group-btn.active .group-icon { transform: rotate(180deg); fill: #fff; }
 
-        /* Content Area (Hidden by default for groups) */
         .group-content {
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-            padding-top: 5px;
-            animation: slideDown 0.3s ease-out;
+            display: none; flex-direction: column; gap: 20px;
+            padding-top: 5px; animation: slideDown 0.3s ease-out;
         }
         .group-content.show { display: flex; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -232,6 +252,9 @@
 </head>
 <body>
 
+    <!-- Toast Notification -->
+    <div id="toast">Copied!</div>
+
     <div id="loader">
         <div class="spinner"></div>
         <div style="font-family:monospace; color:var(--red);">LOADING DATA...</div>
@@ -301,10 +324,6 @@
 
             groupKeys.forEach(key => {
                 const groupData = groups[key];
-                
-                // THE LOGIC: 
-                // If group has fewer than 10 tournaments -> Show Cards Directly (Open)
-                // If group has 10 (or more) tournaments -> Show Button (Closed)
                 
                 if (groupData.length < 10) {
                     // --- RENDER OPEN CARDS ---
@@ -414,8 +433,38 @@
 
         function copy(txt) {
             haptic();
-            navigator.clipboard.writeText(txt);
-            alert("Copied: " + txt);
+            // Try standard clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(txt).then(() => {
+                    showToast("COPIED: " + txt);
+                }).catch(err => {
+                    fallbackCopy(txt);
+                });
+            } else {
+                fallbackCopy(txt);
+            }
+        }
+
+        function fallbackCopy(txt) {
+            const textArea = document.createElement("textarea");
+            textArea.value = txt;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("COPIED: " + txt);
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            t.innerText = msg;
+            t.className = "show";
+            setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000);
         }
 
         function go(key) { haptic(); if(links[key]) window.location.href = links[key]; }
