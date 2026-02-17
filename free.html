@@ -53,18 +53,24 @@
         .subtitle { font-size: 0.8rem; color: #aaa; }
         .link { color: var(--red); font-weight: bold; cursor: pointer; text-decoration: underline; }
 
-        /* --- ACCORDION SYSTEM --- */
+        /* --- CONTAINER --- */
         .container { 
             width: 95%; max-width: 450px; padding-bottom: 100px; 
-            display: flex; flex-direction: column; gap: 15px; 
+            display: flex; flex-direction: column; gap: 20px; 
         }
 
-        /* Group Button (The "Message Button" looking toggle) */
+        /* --- GROUP BUTTON (Only for 10/10 Groups) --- */
+        .group-wrapper {
+            width: 100%;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
         .group-btn {
             background: linear-gradient(90deg, #1a0000, #400000);
             border: 1px solid var(--red);
             padding: 15px 20px;
             width: 100%;
+            box-sizing: border-box;
             border-radius: 8px;
             display: flex; justify-content: space-between; align-items: center;
             cursor: pointer;
@@ -78,7 +84,7 @@
         }
 
         .group-title {
-            font-size: 1.1rem; font-weight: bold; color: #fff;
+            font-size: 1rem; font-weight: bold; color: #fff;
             text-transform: uppercase; letter-spacing: 1px;
         }
         .group-icon {
@@ -87,12 +93,12 @@
         }
         .group-btn.active .group-icon { transform: rotate(180deg); fill: #fff; }
 
-        /* Content Area (Hidden by default) */
+        /* Content Area (Hidden by default for groups) */
         .group-content {
             display: none;
             flex-direction: column;
             gap: 20px;
-            padding: 10px 0;
+            padding-top: 5px;
             animation: slideDown 0.3s ease-out;
         }
         .group-content.show { display: flex; }
@@ -108,16 +114,15 @@
             position: relative;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             transition: transform 0.2s;
+            width: 100%;
         }
 
-        /* Image Area */
         .thumb-box {
             position: relative; width: 100%; height: 160px;
             background: #111;
         }
         .thumb { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Badges */
         .badge-num {
             position: absolute; top: 10px; right: 10px;
             background: rgba(0,0,0,0.9); border: 1px solid var(--gold);
@@ -137,7 +142,6 @@
             z-index: 2;
         }
 
-        /* Status: Done */
         .card.done .thumb { filter: grayscale(100%) brightness(0.4); }
         .card.done .status-overlay { display: block; }
         .status-overlay {
@@ -148,7 +152,6 @@
             z-index: 5; text-transform: uppercase;
         }
 
-        /* DATA SECTION (ID/PASS) */
         .data-area {
             padding: 15px;
             display: flex; flex-direction: column; gap: 10px;
@@ -164,7 +167,6 @@
         .data-label { color: #888; font-size: 0.9rem; font-weight: bold; }
         .data-val { font-family: monospace; font-size: 1.1rem; color: #fff; font-weight: bold; letter-spacing: 1px; }
         
-        /* STATE: WAITING (Red) */
         .data-row.waiting {
             background: rgba(255, 0, 0, 0.1);
             border-left-color: var(--red);
@@ -173,7 +175,6 @@
         }
         .data-row.waiting .data-val { color: var(--red); font-size: 0.9rem; letter-spacing: 0; }
         
-        /* STATE: LIVE (Green) */
         .data-row.live {
             background: rgba(0, 255, 0, 0.05);
             border-left-color: var(--neon);
@@ -190,7 +191,6 @@
         }
         .copy-btn:active { transform: scale(0.95); }
 
-        /* REFRESH BUTTON */
         .refresh-btn {
             background: transparent;
             color: var(--neon);
@@ -249,10 +249,8 @@
         <hr style="border:0; border-top:1px solid #333; margin-top:15px;">
     </div>
 
-    <!-- MAIN CONTAINER FOR ACCORDIONS -->
-    <div class="container" id="main-list">
-        <!-- JS Injects Groups and Cards -->
-    </div>
+    <!-- MAIN CONTAINER -->
+    <div class="container" id="main-list"></div>
 
     <div class="fab-wrap" id="fab-wrap">
         <div class="fab-menu">
@@ -282,55 +280,58 @@
             } catch(e) { console.log(e); }
         }
 
-        // NEW: Grouping Logic
+        // --- NEW LOGIC ---
         function renderGroupedCards(data) {
             const container = document.getElementById('main-list');
             container.innerHTML = "";
 
-            // 1. Sort Data by Number (Descending: Newest First)
-            // If you want 1-10 at top, change b.number - a.number to a.number - b.number
+            // 1. Sort Data (High Number to Low Number)
             data.sort((a, b) => b.number - a.number);
 
-            // 2. Bucket Data into Groups of 10
+            // 2. Bucket Data (Group by sets of 10)
             const groups = {};
             data.forEach(t => {
-                // Determine group index (e.g., Num 5 -> Group 1, Num 15 -> Group 2)
                 const groupIndex = Math.ceil(t.number / 10);
                 if (!groups[groupIndex]) groups[groupIndex] = [];
                 groups[groupIndex].push(t);
             });
 
-            // 3. Get Group Keys and Sort Descending (Group 3, then Group 2, then Group 1)
+            // 3. Process Groups (Highest Group First)
             const groupKeys = Object.keys(groups).sort((a, b) => b - a);
 
-            // 4. Render Accordions
-            groupKeys.forEach((key, index) => {
+            groupKeys.forEach(key => {
                 const groupData = groups[key];
                 
-                // Determine Label: e.g., "11 - 20"
-                const start = (key - 1) * 10 + 1;
-                const end = key * 10;
+                // THE LOGIC: 
+                // If group has fewer than 10 tournaments -> Show Cards Directly (Open)
+                // If group has 10 (or more) tournaments -> Show Button (Closed)
                 
-                // Create Accordion HTML
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = `
-                    <div class="group-btn ${index === 0 ? 'active' : ''}" onclick="toggleGroup(this)">
-                        <div class="group-title">TOURNAMENTS #${start} - #${end}</div>
-                        <svg class="group-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
-                    <div class="group-content ${index === 0 ? 'show' : ''}">
-                        <!-- Cards go here -->
-                    </div>
-                `;
+                if (groupData.length < 10) {
+                    // --- RENDER OPEN CARDS ---
+                    groupData.forEach(t => {
+                        container.appendChild(createCard(t));
+                    });
+                } else {
+                    // --- RENDER BUTTON ACCORDION ---
+                    const start = (key - 1) * 10 + 1;
+                    const end = key * 10;
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'group-wrapper';
+                    
+                    wrapper.innerHTML = `
+                        <div class="group-btn" onclick="toggleGroup(this)">
+                            <div class="group-title">TOURNAMENTS #${start} - #${end}</div>
+                            <svg class="group-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                        </div>
+                        <div class="group-content"></div>
+                    `;
 
-                const contentDiv = wrapper.querySelector('.group-content');
-                
-                // Inject Cards into this group
-                groupData.forEach(t => {
-                    contentDiv.appendChild(createCard(t));
-                });
+                    const contentDiv = wrapper.querySelector('.group-content');
+                    groupData.forEach(t => contentDiv.appendChild(createCard(t)));
 
-                container.appendChild(wrapper);
+                    container.appendChild(wrapper);
+                }
             });
         }
 
@@ -341,7 +342,6 @@
             content.classList.toggle('show');
         }
 
-        // Existing Card Logic
         function createCard(t) {
             const isDone = t.status === "Done";
             const div = document.createElement('div');
