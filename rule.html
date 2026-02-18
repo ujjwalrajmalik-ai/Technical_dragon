@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dragon Gamer - Rules</title>
+    <style>
+        /* --- CORE THEME --- */
+        :root {
+            --red: #FF0000;
+            --maroon: #800000;
+            --bg: #000000;
+            --card-bg: #0d0d0d;
+            --neon: #00FF00;
+            --gold: #FFD700;
+            --text-gray: #ccc;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* --- LANGUAGE MODAL (Overlay) --- */
+        #lang-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            gap: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .lang-logo {
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 3px solid var(--red);
+            box-shadow: 0 0 30px var(--maroon);
+            margin-bottom: 20px;
+            animation: pulseLogo 2s infinite;
+        }
+
+        .lang-title {
+            font-size: 1.5rem; text-transform: uppercase;
+            letter-spacing: 2px; font-weight: bold; margin-bottom: 10px;
+        }
+
+        .lang-btn {
+            background: linear-gradient(45deg, #1a1a1a, #333);
+            border: 1px solid var(--red);
+            color: #fff;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 200px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+            font-weight: bold;
+        }
+
+        .lang-btn:active { transform: scale(0.95); }
+        .lang-btn:hover {
+            background: var(--red);
+            box-shadow: 0 0 20px var(--red);
+            border-color: #fff;
+        }
+
+        /* --- MAIN CONTENT (Hidden Initially) --- */
+        #main-content {
+            display: none;
+            width: 100%; max-width: 500px;
+            padding: 20px; box-sizing: border-box;
+            flex-direction: column; gap: 20px;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 2px solid var(--red);
+            margin-bottom: 10px;
+        }
+        .page-title {
+            font-size: 1.8rem; font-weight: 800;
+            color: var(--red); text-transform: uppercase;
+            text-shadow: 0 0 10px var(--maroon);
+        }
+
+        /* Rule Cards */
+        .rule-card {
+            background: linear-gradient(145deg, #111, #0a0a0a);
+            border-left: 4px solid var(--red);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rule-icon {
+            position: absolute; right: -10px; top: -10px;
+            width: 80px; height: 80px; fill: #222;
+            z-index: 0; transform: rotate(-15deg);
+        }
+
+        .rule-title {
+            font-size: 1.2rem; color: var(--gold);
+            font-weight: bold; margin-bottom: 10px;
+            position: relative; z-index: 1; display: flex; align-items: center; gap: 10px;
+        }
+
+        .rule-text {
+            font-size: 0.95rem; line-height: 1.6; color: #ddd;
+            position: relative; z-index: 1;
+        }
+
+        /* Highlights */
+        .highlight-red { color: var(--red); font-weight: bold; text-transform: uppercase; }
+        .highlight-neon { color: var(--neon); font-weight: bold; }
+
+        /* Back Button */
+        .back-btn {
+            margin-top: 30px;
+            background: transparent;
+            border: 2px solid #333;
+            color: #888;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+        }
+        .back-btn:active { background: #222; color: #fff; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseLogo { 0% { box-shadow: 0 0 20px var(--maroon); } 50% { box-shadow: 0 0 40px var(--red); } 100% { box-shadow: 0 0 20px var(--maroon); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- LANGUAGE SELECTION MODAL -->
+    <div id="lang-overlay">
+        <img src="https://ik.imagekit.io/Rajmalik99/IMG_20260213_140619_893.webp?updatedAt=1771161938086" class="lang-logo">
+        <div class="lang-title">Select Language</div>
+        <div class="lang-btn" onclick="selectLang('en')">English</div>
+        <div class="lang-btn" onclick="selectLang('hi')">Hindi (हिंदी)</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content">
+        <div class="header">
+            <img src="https://ik.imagekit.io/Rajmalik99/IMG_20260213_140619_893.webp?updatedAt=1771161938086">
+            <div class="page-title" id="page-header">RULES</div>
+        </div>
+
+        <div id="rules-container" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Rules injected here -->
+        </div>
+
+        <button class="back-btn" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <script>
+        // DATA OBJECT
+        const data = {
+            en: {
+                title: "Rules & Requirements",
+                rules: [
+                    {
+                        icon: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z",
+                        head: "1. Mandatory Follow & Subscribe",
+                        text: "You <span class='highlight-neon'>MUST</span> follow us on Instagram and subscribe to our YouTube channel <span class='highlight-neon'>BEFORE</span> the tournament begins. If you follow/subscribe only after winning, you will be <span class='highlight-red'>DISQUALIFIED</span>."
+                    },
+                    {
+                        icon: "M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z",
+                        head: "2. Instagram Story Requirement",
+                        text: "Before playing, you <b>MUST</b> post a story on your Instagram that includes:<br>• The link to my YouTube Livestream.<br>• A <b>mention/tag</b> of my Instagram account."
+                    },
+                    {
+                        icon: "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z",
+                        head: "3. Verification Process",
+                        text: "If you win, I will verify that you posted the story <b>BEFORE</b> the match started. If the story is missing or was posted late, you will be <span class='highlight-red'>DISQUALIFIED</span> immediately."
+                    }
+                ],
+                back: "Back to Home"
+            },
+            hi: {
+                title: "टूर्नामेंट नियम",
+                rules: [
+                    {
+                        icon: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z",
+                        head: "1. Follow & Subscribe (ज़रूरी)",
+                        text: "टूर्नामेंट खेलने से पहले आपको हमें Instagram पर follow और YouTube पर subscribe करना <span class='highlight-neon'>ज़रूरी है</span>। अगर आप जीतने के बाद follow करते हैं, तो आपको <span class='highlight-red'>Disqualify</span> कर दिया जाएगा।"
+                    },
+                    {
+                        icon: "M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z",
+                        head: "2. Instagram Story (ज़रूरी)",
+                        text: "मैच शुरू होने से पहले आपको अपनी Instagram Story लगानी होगी। उस स्टोरी में मेरी <b>YouTube Livestream का link</b> होना चाहिए और मुझे <b>mention</b> करना ज़रूरी है।"
+                    },
+                    {
+                        icon: "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z",
+                        head: "3. Checking / Verification",
+                        text: "अगर आप जीत जाते हैं (Winner बनते हैं), तो मैं check करूँगा कि आपने मैच से पहले स्टोरी लगाई थी या नहीं। अगर स्टोरी नहीं मिली, तो आप <span class='highlight-red'>Disqualify</span> हो जाएँगे।"
+                    }
+                ],
+                back: "मुख्य पेज पर जाएँ"
+            }
+        };
+
+        function selectLang(lang) {
+            // Haptic
+            if(navigator.vibrate) navigator.vibrate(50);
+
+            const content = data[lang];
+            const container = document.getElementById('rules-container');
+            
+            // Set Header
+            document.getElementById('page-header').innerText = content.title;
+            document.querySelector('.back-btn').innerText = content.back;
+
+            // Generate Cards
+            container.innerHTML = "";
+            content.rules.forEach(r => {
+                const card = document.createElement('div');
+                card.className = "rule-card";
+                card.innerHTML = `
+                    <svg class="rule-icon" viewBox="0 0 24 24"><path d="${r.icon}"/></svg>
+                    <div class="rule-title">${r.head}</div>
+                    <div class="rule-text">${r.text}</div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Transition
+            const overlay = document.getElementById('lang-overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.getElementById('main-content').style.display = 'flex';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
