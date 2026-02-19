@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dragon Gamer</title>
     <style>
         /* Base Styles */
@@ -18,11 +18,13 @@
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
-            overflow-x: hidden; /* Prevent horizontal scroll on mobile */
+            overflow-x: hidden;
+            
+            /* GLOBAL PROTECTION: Disables selection and touch menu */
             -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+/Edge */
+            -ms-user-select: none; /* IE 10 and IE 11 */
             user-select: none; /* Standard syntax */
+            -webkit-touch-callout: none; /* iOS Safari - Hides the link preview/menu */
         }
 
         h1 {
@@ -39,7 +41,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 400px; /* Constrain width for mobile */
+            max-width: 400px;
         }
 
         .logo-container {
@@ -67,12 +69,8 @@
         }
 
         @keyframes rotateBackground {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .main-logo {
@@ -87,58 +85,59 @@
         .button-group {
             display: flex;
             flex-direction: column;
-            gap: 15px; /* Smaller gap */
+            gap: 15px;
             width: 90%;
-            max-width: 280px; /* Smaller max-width for buttons */
+            max-width: 280px;
         }
 
+        /* CHANGED: nav-button is now a div, so we add cursor pointer */
         .nav-button {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px 10px; /* Smaller padding */
+            padding: 12px 10px;
             background-color: #1a1a1a;
             color: #fff;
             text-decoration: none;
-            border-radius: 8px; /* Slightly less rounded */
+            border-radius: 8px;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
             font-weight: bold;
-            font-size: 1.1em; /* Smaller font size */
+            font-size: 1.1em;
             text-align: center;
-            border: 1px solid #444; /* Thinner subtle border */
+            border: 1px solid #444;
             position: relative;
             overflow: hidden;
+            cursor: pointer; /* Makes it look clicky on desktop */
+            
+            /* EXTRA PROTECTION for Buttons */
+            -webkit-tap-highlight-color: transparent; /* Removes blue overlay on tap */
         }
 
-        /* Glow animation without touch */
+        /* Glow animation */
         .nav-button::before {
             content: '';
             position: absolute;
-            inset: -5px; /* Make it slightly larger than the button */
+            inset: -5px;
             background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, transparent 20%, transparent 80%, #FF0000 100%);
             animation: buttonGlow 4s linear infinite;
-            filter: blur(8px); /* Soften the glow */
-            opacity: 0.6; /* Subtle glow */
+            filter: blur(8px);
+            opacity: 0.6;
             z-index: -1;
             transition: opacity 0.3s ease;
         }
 
-        .nav-button:hover::before {
-            opacity: 1; /* More intense glow on hover */
-        }
+        .nav-button:hover::before { opacity: 1; }
 
         @keyframes buttonGlow {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Haptic feel on click */
         .nav-button:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
         .nav-button:hover {
@@ -148,7 +147,7 @@
         }
 
         .nav-button .caption {
-            font-size: 0.75em; /* Smaller caption */
+            font-size: 0.75em;
             color: #bbb;
             margin-top: 5px;
             font-weight: normal;
@@ -193,280 +192,59 @@
             padding: 50px;
             position: relative;
             overflow: hidden;
-            display: grid;
             grid-template-columns: 300px 1fr;
             gap: 50px;
         }
-
-        .desktop-sidebar {
-            background-color: #111;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            position: relative;
-            border: 1px solid #333;
-        }
-
-        .desktop-main-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            text-align: left;
-            padding: 40px;
-            background-color: rgba(10, 10, 10, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-            border: 1px solid #333;
-        }
-
-        .desktop-title {
-            font-size: 4.5em;
-            font-weight: bold;
-            color: #FF0000;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 30px rgba(255, 0, 0, 0.5);
-            margin-bottom: 30px;
-            letter-spacing: 3px;
-            text-align: center;
-            width: 100%;
-            text-transform: uppercase;
-        }
-
-        .desktop-logo-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin-bottom: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 5px solid #800000;
-        }
-
-        .desktop-logo-background-spinner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, #800000 30%, #000 60%, #FF0000 100%);
-            animation: rotateBackground 7s linear infinite reverse;
-            z-index: 0;
-        }
-
-        .desktop-main-logo {
-            position: relative;
-            width: 230px;
-            height: 230px;
-            border-radius: 50%;
-            object-fit: cover;
-            z-index: 1;
-            border: 3px solid #FF0000;
-        }
-
-        .desktop-nav-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px; /* Smaller gap */
-            width: 100%;
-            max-width: 700px; /* Smaller max-width for buttons */
-            margin-top: 30px;
-        }
-
+        
+        /* ... (Keeping your Desktop styles roughly same but applying protection) ... */
+        .desktop-sidebar { background-color: #111; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; border: 1px solid #333; }
+        .desktop-main-content { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; padding: 40px; background-color: rgba(10,10,10,0.9); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #333; }
+        .desktop-title { font-size: 4.5em; font-weight: bold; color: #FF0000; text-shadow: 0 0 20px rgba(255,0,0,0.9); margin-bottom: 30px; letter-spacing: 3px; text-align: center; width: 100%; text-transform: uppercase; }
+        .desktop-logo-container { position: relative; width: 250px; height: 250px; margin-bottom: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; overflow: hidden; border: 5px solid #800000; }
+        .desktop-logo-background-spinner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, #800000 30%, #000 60%, #FF0000 100%); animation: rotateBackground 7s linear infinite reverse; z-index: 0; }
+        .desktop-main-logo { position: relative; width: 230px; height: 230px; border-radius: 50%; object-fit: cover; z-index: 1; border: 3px solid #FF0000; }
+        .desktop-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 700px; margin-top: 30px; }
+        
+        /* Desktop Button updates */
         .desktop-nav-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 18px 15px; /* Smaller padding */
-            background-color: #222;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 12px; /* Less rounded */
-            transition: background-color 0.4s ease, transform 0.3s ease, box-shadow 0.4s ease;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-            font-weight: bold;
-            font-size: 1.25em; /* Smaller font */
-            text-align: center;
-            border: 2px solid #555; /* Thinner border */
-            position: relative;
-            overflow: hidden;
-            perspective: 1000px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 18px 15px; background-color: #222; color: #fff; text-decoration: none;
+            border-radius: 12px; transition: background-color 0.4s ease, transform 0.3s ease, box-shadow 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5); font-weight: bold; font-size: 1.25em; text-align: center;
+            border: 2px solid #555; position: relative; overflow: hidden; perspective: 1000px; cursor: pointer;
         }
-
-        .desktop-nav-button::before {
-            content: '';
-            position: absolute;
-            inset: -5px;
-            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, transparent 20%, transparent 80%, #FF0000 100%);
-            animation: buttonGlow 4s linear infinite;
-            filter: blur(8px);
-            opacity: 0.6;
-            z-index: -1;
-            transition: opacity 0.3s ease;
-        }
-
-        .desktop-nav-button:hover::before {
-            opacity: 1;
-        }
-
-        .desktop-nav-button:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-
-        .desktop-nav-button:hover {
-            background-color: #444;
-            transform: translateY(-5px) scale(1.02) rotateX(3deg);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-
-        .desktop-nav-button .caption {
-            font-size: 0.85em;
-            color: #ccc;
-            margin-top: 7px;
-            font-weight: normal;
-            line-height: 1.3;
-        }
-
-        .desktop-nav-button.prime {
-            background: linear-gradient(45deg, #800000, #FF0000);
-            border-color: #FFD700;
-            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6);
-        }
-        .desktop-nav-button.prime:hover {
-            background: linear-gradient(45deg, #FF0000, #A00000);
-            transform: translateY(-7px) scale(1.03) rotateX(5deg);
-        }
-        .desktop-nav-button.prime::before {
-            background: conic-gradient(from 0deg at 50% 50%, #FFD700 0%, transparent 20%, transparent 80%, #FFD700 100%);
-            animation: buttonGlowPrime 4s linear infinite;
-        }
-
-        .desktop-nav-button.rules .caption {
-            color: #FFD700;
-            font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
-        }
+        .desktop-nav-button::before { content: ''; position: absolute; inset: -5px; background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, transparent 20%, transparent 80%, #FF0000 100%); animation: buttonGlow 4s linear infinite; filter: blur(8px); opacity: 0.6; z-index: -1; transition: opacity 0.3s ease; }
+        .desktop-nav-button:hover::before { opacity: 1; }
+        .desktop-nav-button:active { transform: scale(0.98); box-shadow: 0 2px 5px rgba(0,0,0,0.6); transition: transform 0.1s ease, box-shadow 0.1s ease; }
+        .desktop-nav-button:hover { background-color: #444; transform: translateY(-5px) scale(1.02) rotateX(3deg); box-shadow: 0 12px 30px rgba(0,0,0,0.7), 0 0 10px rgba(255,255,255,0.1); }
+        .desktop-nav-button .caption { font-size: 0.85em; color: #ccc; margin-top: 7px; font-weight: normal; line-height: 1.3; }
+        .desktop-nav-button.prime { background: linear-gradient(45deg, #800000, #FF0000); border-color: #FFD700; box-shadow: 0 10px 25px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6); }
+        .desktop-nav-button.prime:hover { background: linear-gradient(45deg, #FF0000, #A00000); transform: translateY(-7px) scale(1.03) rotateX(5deg); }
+        .desktop-nav-button.prime::before { background: conic-gradient(from 0deg at 50% 50%, #FFD700 0%, transparent 20%, transparent 80%, #FFD700 100%); animation: buttonGlowPrime 4s linear infinite; }
+        .desktop-nav-button.rules .caption { color: #FFD700; font-weight: bold; text-shadow: 0 0 8px rgba(255, 215, 0, 0.8); }
 
         /* Preloader */
-        .preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.7s ease-out;
-        }
-
-        .preloader.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .preloader-logo-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            overflow: hidden;
-            animation: preloaderLogoFadeIn 1s ease-out forwards;
-        }
-        
-        @keyframes preloaderLogoFadeIn {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        .preloader-logo-background-spinner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, #800000 30%, #000 60%, #FF0000 100%);
-            animation: rotateBackground 3s linear infinite; /* Faster spin */
-            z-index: 0;
-        }
-
-        .preloader-main-logo {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            z-index: 1;
-        }
-
-        .skeleton-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 80%;
-            max-width: 300px;
-            margin-top: 30px;
-        }
-
-        .skeleton-line {
-            height: 20px;
-            background-color: #222;
-            border-radius: 4px;
-            animation: pulseSkeleton 1.5s infinite alternate;
-        }
-
+        .preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; opacity: 1; transition: opacity 0.7s ease-out; }
+        .preloader.hidden { opacity: 0; pointer-events: none; }
+        .preloader-logo-container { position: relative; width: 120px; height: 120px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; overflow: hidden; animation: preloaderLogoFadeIn 1s ease-out forwards; }
+        @keyframes preloaderLogoFadeIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        .preloader-logo-background-spinner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg at 50% 50%, #FF0000 0%, #800000 30%, #000 60%, #FF0000 100%); animation: rotateBackground 3s linear infinite; z-index: 0; }
+        .preloader-main-logo { position: relative; width: 100px; height: 100px; border-radius: 50%; object-fit: cover; z-index: 1; }
+        .skeleton-container { display: flex; flex-direction: column; gap: 10px; width: 80%; max-width: 300px; margin-top: 30px; }
+        .skeleton-line { height: 20px; background-color: #222; border-radius: 4px; animation: pulseSkeleton 1.5s infinite alternate; }
         .skeleton-line:nth-child(1) { width: 90%; animation-delay: 0s; }
         .skeleton-line:nth-child(2) { width: 70%; animation-delay: 0.2s; }
         .skeleton-line:nth-child(3) { width: 85%; animation-delay: 0.4s; }
         .skeleton-line:nth-child(4) { width: 60%; animation-delay: 0.6s; }
-
-        @keyframes pulseSkeleton {
-            0% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
+        @keyframes pulseSkeleton { 0% { opacity: 0.7; } 100% { opacity: 1; } }
 
         /* Media Queries */
-        @media (max-width: 767px) {
-            .desktop-container {
-                display: none;
-            }
-            .mobile-container {
-                display: flex;
-            }
-        }
-        @media (min-width: 768px) {
-            body {
-                padding: 0;
-            }
-            .mobile-container {
-                display: none;
-            }
-            .desktop-container {
-                display: grid;
-            }
-        }
+        @media (max-width: 767px) { .desktop-container { display: none; } .mobile-container { display: flex; } }
+        @media (min-width: 768px) { body { padding: 0; } .mobile-container { display: none; } .desktop-container { display: grid; } }
     </style>
 </head>
 <body>
+
     <div class="preloader">
         <div class="preloader-logo-container">
             <div class="preloader-logo-background-spinner"></div>
@@ -487,27 +265,33 @@
             <div class="logo-background-spinner"></div>
             <img class="main-logo" src="https://ik.imagekit.io/Rajmalik99/IMG_20260213_140619_893.webp" alt="Main Logo">
         </div>
+        
+        <!-- BUTTONS ARE NOW DIVS (No Link Preview!) -->
         <div class="button-group">
-            <a href="free.html" class="nav-button">
+            <div class="nav-button" onclick="navigate('free.html')">
                 Free Tournament
                 <span class="caption">₹10,000 Prize on each</span>
-            </a>
-            <a href="pack.html" class="nav-button">
-                Register Yourself
-                <span class="caption">we will contract you </span>
-            </a>
-            <a href="special.html" class="nav-button prime">
+            </div>
+            
+            <div class="nav-button" onclick="navigate('pack.html')">
+                Free packs
+                <span class="caption">some free stuffs</span>
+            </div>
+            
+            <div class="nav-button prime" onclick="navigate('special.html')">
                 Prime Tournament Offline
                 <span class="caption">Biggest offline Tournament</span>
-            </a>
-            <a href="rule.html" class="nav-button rules">
+            </div>
+            
+            <div class="nav-button rules" onclick="navigate('rule.html')">
                 Rules
-                <span class="caption">IMPORTANT</span>
-            </a>
-            <a href="hero.html" class="nav-button">
+                <span class="caption">(Red) IMPORTANT</span>
+            </div>
+            
+            <div class="nav-button" onclick="navigate('hero.html')">
                 Heros
                 <span class="caption">Lions</span>
-            </a>
+            </div>
         </div>
     </div>
 
@@ -525,41 +309,56 @@
                 Welcome to the ultimate gaming experience. Immerse yourself in thrilling tournaments, exclusive rewards, and a vibrant community.
             </p>
             <div class="desktop-nav-grid">
-                <a href="free.html" class="desktop-nav-button">
+                <div class="desktop-nav-button" onclick="navigate('free.html')">
                     Free Tournament
                     <span class="caption">₹10,000 Prize on each</span>
-                </a>
-                <a href="pack.html" class="desktop-nav-button">
-                   register
-                    <span class="caption">we will contract you</span>
-                </a>
-                <a href="special.html" class="desktop-nav-button prime">
+                </div>
+                <div class="desktop-nav-button" onclick="navigate('pack.html')">
+                    Free packs
+                    <span class="caption">some free stuffs</span>
+                </div>
+                <div class="desktop-nav-button prime" onclick="navigate('special.html')">
                     Prime Tournament Offline
                     <span class="caption">Biggest offline Tournament</span>
-                </a>
-                <a href="rule.html" class="desktop-nav-button rules">
+                </div>
+                <div class="desktop-nav-button rules" onclick="navigate('rule.html')">
                     Rules
-                    <span class="caption">IMPORTANT</span>
-                </a>
-                <a href="hero.html" class="desktop-nav-button">
+                    <span class="caption">(Red) IMPORTANT</span>
+                </div>
+                <div class="desktop-nav-button" onclick="navigate('hero.html')">
                     Heros
                     <span class="caption">Lions</span>
-                </a>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Disable right-click
+        // PROTECTED NAVIGATION FUNCTION
+        function navigate(url) {
+            // Haptic Feedback
+            if(navigator.vibrate) navigator.vibrate(50);
+            
+            // Redirect
+            window.location.href = url;
+        }
+
+        // GLOBAL PROTECTION SCRIPT
+        
+        // 1. Disable Right Click (Desktop)
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // Preloader logic
+        // 2. Disable Text Selection & Dragging
+        document.addEventListener('dragstart', event => event.preventDefault());
+        document.addEventListener('selectstart', event => event.preventDefault());
+
+        // Preloader Logic
         window.addEventListener('load', () => {
             const preloader = document.querySelector('.preloader');
-            // Give a short delay for logo animation to be visible
+            // Slight delay for smooth aesthetic
             setTimeout(() => {
                 preloader.classList.add('hidden');
-            }, 1500); // 1.5 seconds delay
+            }, 1500);
         });
     </script>
 
